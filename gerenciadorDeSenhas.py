@@ -7,6 +7,9 @@ if senha != MASTER_PASSWORD:
     print("Senha inválida! Encerrando...")
     exit()
 
+# Não é preciso criar o arquivo, com o python você consegue criar
+# automaticamente ao rodar o script pela primeira vez no diretório
+# que estiver.
 conn = sqlite3.connect('passwords.db')
 
 cursor = conn.cursor()
@@ -27,7 +30,9 @@ def menu():
     print("* s : sair                   *")
     print("******************************")
 
-def get_password(service):
+# função para mostrar um serviço específico já cadastrado
+# no banco
+def get_service(service):
     cursor.execute(f'''
         SELECT username, password FROM users
         WHERE service = '{service}'
@@ -39,6 +44,7 @@ def get_password(service):
         for user in cursor.fetchall():
             print (user)
 
+# cadastrar novos usuários
 def insert_password(service, username, password):
     cursor.execute(f'''
         INSERT INTO users (service, username, password)
@@ -46,6 +52,7 @@ def insert_password(service, username, password):
         ''')
     conn.commit()
 
+# função para mostar os serviços de cada usuário
 def show_services():
     cursor.execute('''
         SELECT service FROM users;    
@@ -53,6 +60,7 @@ def show_services():
     for service in cursor.fetchall():
         print(service)
 
+# colocando as funções em prática
 while True:
     menu()
     op = input("O que deseja fazer? ")
@@ -68,6 +76,7 @@ while True:
     
     if op == 'r':
         service = input('Qual o serviço para o qual quer a senha? ')
-        get_password(service)
+        get_service(service)
 
+# sempre lembrando de fechar a conexão criada anteriormente
 conn.close()
